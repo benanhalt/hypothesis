@@ -340,7 +340,7 @@ def fill_for(elements, unique, fill, name=""):
         else:
             fill = elements
     else:
-        st.check_strategy(fill, f"{name}.fill" if name else "fill")
+        check_strategy(fill, f"{name}.fill" if name else "fill")
     return fill
 
 
