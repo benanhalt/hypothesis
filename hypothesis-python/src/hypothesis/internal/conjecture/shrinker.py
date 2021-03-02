@@ -114,26 +114,6 @@ def defines_shrink_pass():
     return accept
 
 
-def derived_value(fn):
-    """It's useful during shrinking to have access to derived values of
-    the current shrink target.
-
-    This decorator allows you to define these as cached properties. They
-    are calculated once, then cached until the shrink target changes, then
-    recalculated the next time they are used."""
-
-    def accept(instance):
-        try:
-            return instance._Shrinker__derived_values[fn.__name__]
-        except KeyError:
-            return instance._Shrinker__derived_values.setdefault(
-                fn.__name__, fn(instance)
-            )
-
-    accept.__name__ = fn.__name__
-    return property(accept)
-
-
 class Shrinker:
     """A shrinker is a child object of a ConjectureRunner which is designed to
     manage the associated state of a particular shrink problem. That is, we
@@ -269,6 +249,23 @@ class Shrinker:
 
     """
 
+    def derived_value(fn):
+        """It's useful during shrinking to have access to derived values of
+        the current shrink target.
+
+        This decorator allows you to define these as cached properties. They
+        are calculated once, then cached until the shrink target changes, then
+        recalculated the next time they are used."""
+
+        def accept(self):
+            try:
+                return self.__derived_values[fn.__name__]
+            except KeyError:
+                return self.__derived_values.setdefault(fn.__name__, fn(self))
+
+        accept.__name__ = fn.__name__
+        return property(accept)
+
     def __init__(self, engine, initial, predicate, allow_transition):
         """Create a shrinker for a particular engine, with a given starting
         point and predicate. When shrink() is called it will attempt to find an
@@ -308,7 +305,7 @@ class Shrinker:
         # testing and learning purposes.
         self.extra_dfas = {}
 
-    @derived_value
+    @derived_value  # type: ignore
     def cached_calculations(self):
         return {}
 
@@ -344,7 +341,7 @@ class Shrinker:
             self.add_new_pass(name)
         return self.passes_by_name[name]
 
-    @derived_value
+    @derived_value  # type: ignore
     def match_cache(self):
         return {}
 
@@ -536,7 +533,7 @@ class Shrinker:
             + [dfa_replacement(n) for n in SHRINKING_DFAS]
         )
 
-    @derived_value
+    @derived_value  # type: ignore
     def shrink_pass_choice_trees(self):
         return defaultdict(ChoiceTree)
 
@@ -651,7 +648,7 @@ class Shrinker:
     def all_block_bounds(self):
         return self.shrink_target.blocks.all_bounds()
 
-    @derived_value
+    @derived_value  # type: ignore
     def examples_by_label(self):
         """An index of all examples grouped by their label, with
         the examples stored in their normal index order."""
@@ -661,7 +658,7 @@ class Shrinker:
             examples_by_label[ex.label].append(ex)
         return dict(examples_by_label)
 
-    @derived_value
+    @derived_value  # type: ignore
     def distinct_labels(self):
         return sorted(self.examples_by_label, key=str)
 
@@ -1013,7 +1010,7 @@ class Shrinker:
                 return False
         return True
 
-    @derived_value
+    @derived_value  # type: ignore
     def blocks_by_non_zero_suffix(self):
         """Returns a list of blocks grouped by their non-zero suffix,
         as a list of (suffix, indices) pairs, skipping all groupings
@@ -1028,7 +1025,7 @@ class Shrinker:
             )
         return duplicates
 
-    @derived_value
+    @derived_value  # type: ignore
     def duplicated_block_suffixes(self):
         return sorted(self.blocks_by_non_zero_suffix)
 
