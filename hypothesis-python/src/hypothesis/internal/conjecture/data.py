@@ -16,6 +16,7 @@
 import time
 from collections import defaultdict
 from enum import IntEnum
+from typing import Dict
 
 import attr
 
@@ -56,7 +57,7 @@ class StructuralCoverageTag:
     label = attr.ib()
 
 
-STRUCTURAL_COVERAGE_CACHE = {}
+STRUCTURAL_COVERAGE_CACHE = {}  # type: Dict[str, StructuralCoverageTag]
 
 
 def structural_coverage(label):

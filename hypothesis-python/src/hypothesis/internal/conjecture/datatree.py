@@ -13,15 +13,16 @@
 #
 # END HEADER
 
+from typing import Any, Dict, FrozenSet
+
 import attr
 
-from hypothesis.errors import Flaky, HypothesisException
+from hypothesis.errors import Flaky, HypothesisException, StopTest
 from hypothesis.internal.compat import int_to_bytes
 from hypothesis.internal.conjecture.data import (
     ConjectureData,
     DataObserver,
     Status,
-    StopTest,
     bits_to_bytes,
 )
 from hypothesis.internal.conjecture.junkdrawer import IntList
@@ -39,7 +40,7 @@ def inconsistent_generation():
     )
 
 
-EMPTY = frozenset()
+EMPTY = frozenset()  # type: FrozenSet[Any]
 
 
 @attr.s(slots=True)
@@ -73,7 +74,7 @@ class Conclusion:
     interesting_origin = attr.ib()
 
 
-CONCLUSIONS = {}
+CONCLUSIONS = {}  # type: Dict[Conclusion, Conclusion]
 
 
 def conclusion(status, interesting_origin):

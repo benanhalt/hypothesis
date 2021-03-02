@@ -35,7 +35,7 @@ from hypothesis.internal.conjecture.junkdrawer import (
     replace_all,
 )
 from hypothesis.internal.conjecture.shrinking import Float, Integer, Lexical, Ordering
-from hypothesis.internal.conjecture.shrinking.dfas import SHRINKING_DFAS
+from hypothesis.internal.conjecture.shrinking.learned_dfas import SHRINKING_DFAS
 
 if False:
     from typing import Dict  # noqa
@@ -111,6 +111,24 @@ def defines_shrink_pass():
         return run
 
     return accept
+
+
+def derived_value(fn):
+    """It's useful during shrinking to have access to derived values of
+    the current shrink target.
+
+    This decorator allows you to define these as cached properties. They
+    are calculated once, then cached until the shrink target changes, then
+    recalculated the next time they are used."""
+
+    def accept(self):
+        try:
+            return self.__derived_values[fn.__name__]
+        except KeyError:
+            return self.__derived_values.setdefault(fn.__name__, fn(self))
+
+    accept.__name__ = fn.__name__
+    return property(accept)
 
 
 class Shrinker:
@@ -247,23 +265,6 @@ class Shrinker:
       the whole thing with zero).
 
     """
-
-    def derived_value(fn):
-        """It's useful during shrinking to have access to derived values of
-        the current shrink target.
-
-        This decorator allows you to define these as cached properties. They
-        are calculated once, then cached until the shrink target changes, then
-        recalculated the next time they are used."""
-
-        def accept(self):
-            try:
-                return self.__derived_values[fn.__name__]
-            except KeyError:
-                return self.__derived_values.setdefault(fn.__name__, fn(self))
-
-        accept.__name__ = fn.__name__
-        return property(accept)
 
     def __init__(self, engine, initial, predicate, allow_transition):
         """Create a shrinker for a particular engine, with a given starting

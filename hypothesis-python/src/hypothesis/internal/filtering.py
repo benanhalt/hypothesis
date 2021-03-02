@@ -78,10 +78,10 @@ def get_numeric_predicate_bounds(predicate: Predicate) -> ConstructivePredicate:
     """
     if (
         type(predicate) is partial
-        and len(predicate.args) == 1
-        and not predicate.keywords
+        and len(predicate.args) == 1  # type: ignore
+        and not predicate.keywords  # type: ignore
     ):
-        arg = predicate.args[0]
+        arg = predicate.args[0]  # type: ignore
         if (isinstance(arg, Decimal) and Decimal.is_snan(arg)) or not isinstance(
             arg, (int, float, Fraction, Decimal)
         ):
@@ -94,8 +94,8 @@ def get_numeric_predicate_bounds(predicate: Predicate) -> ConstructivePredicate:
             operator.ge: {"max_value": arg},  # lambda x: arg >= x
             operator.gt: {"max_value": arg, "exclude_max": True},  # lambda x: arg > x
         }
-        if predicate.func in options:
-            return ConstructivePredicate(options[predicate.func], None)
+        if predicate.func in options:  # type: ignore
+            return ConstructivePredicate(options[predicate.func], None)  # type: ignore
 
     # TODO: handle lambdas by AST analysis
 
@@ -103,7 +103,7 @@ def get_numeric_predicate_bounds(predicate: Predicate) -> ConstructivePredicate:
 
 
 def get_integer_predicate_bounds(predicate: Predicate) -> ConstructivePredicate:
-    kwargs, predicate = get_numeric_predicate_bounds(predicate)
+    kwargs, predicate = get_numeric_predicate_bounds(predicate)  # type: ignore
 
     if "min_value" in kwargs:
         if kwargs["min_value"] == -math.inf:

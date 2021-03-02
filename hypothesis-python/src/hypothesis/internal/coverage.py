@@ -112,7 +112,6 @@ else:
     def check_function(f):
         return f
 
-    # Mypy bug: https://github.com/python/mypy/issues/4117
-    @contextmanager  # type: ignore
+    @contextmanager
     def check(name):
         yield
