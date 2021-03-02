@@ -224,9 +224,9 @@ class RuleBasedStateMachine(metaclass=StateMachineMeta):
     def __init__(self):
         if not self.rules():
             raise InvalidDefinition(f"Type {type(self).__name__} defines no rules")
-        self.bundles = {}  # type: Dict[str, list]
+        self.bundles: Dict[str, list] = {}
         self.name_counter = 1
-        self.names_to_values = {}  # type: Dict[str, Any]
+        self.names_to_values: Dict[str, Any] = {}
         self.__stream = StringIO()
         self.__printer = RepresentationPrinter(self.__stream)
         self._initialize_rules_to_run = copy(self.initialize_rules())

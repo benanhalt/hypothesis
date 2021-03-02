@@ -1266,7 +1266,7 @@ def find(
         )
     specifier.validate()
 
-    last = []  # type: List[Ex]
+    last: List[Ex] = []
 
     @settings
     @given(specifier)

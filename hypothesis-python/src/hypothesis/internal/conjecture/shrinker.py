@@ -14,6 +14,7 @@
 # END HEADER
 
 from collections import defaultdict
+from typing import Dict
 
 import attr
 
@@ -67,7 +68,7 @@ def sort_key(buffer):
     return (len(buffer), buffer)
 
 
-SHRINK_PASS_DEFINITIONS = {}  # type: Dict[str, ShrinkPassDefinition]
+SHRINK_PASS_DEFINITIONS: Dict[str, "ShrinkPassDefinition"] = {}
 
 
 @attr.s()
@@ -121,11 +122,13 @@ def derived_value(fn):
     are calculated once, then cached until the shrink target changes, then
     recalculated the next time they are used."""
 
-    def accept(self):
+    def accept(instance):
         try:
-            return self.__derived_values[fn.__name__]
+            return instance._Shrinker__derived_values[fn.__name__]
         except KeyError:
-            return self.__derived_values.setdefault(fn.__name__, fn(self))
+            return instance._Shrinker__derived_values.setdefault(
+                fn.__name__, fn(instance)
+            )
 
     accept.__name__ = fn.__name__
     return property(accept)

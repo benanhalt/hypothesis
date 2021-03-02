@@ -57,7 +57,7 @@ class StructuralCoverageTag:
     label = attr.ib()
 
 
-STRUCTURAL_COVERAGE_CACHE = {}  # type: Dict[str, StructuralCoverageTag]
+STRUCTURAL_COVERAGE_CACHE: Dict[str, StructuralCoverageTag] = {}
 
 
 def structural_coverage(label):

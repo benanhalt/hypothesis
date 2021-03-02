@@ -40,7 +40,7 @@ def inconsistent_generation():
     )
 
 
-EMPTY = frozenset()  # type: FrozenSet[Any]
+EMPTY: FrozenSet[Any] = frozenset()
 
 
 @attr.s(slots=True)
@@ -74,7 +74,7 @@ class Conclusion:
     interesting_origin = attr.ib()
 
 
-CONCLUSIONS = {}  # type: Dict[Conclusion, Conclusion]
+CONCLUSIONS: Dict[Conclusion, Conclusion] = {}
 
 
 def conclusion(status, interesting_origin):

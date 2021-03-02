@@ -77,11 +77,11 @@ def get_numeric_predicate_bounds(predicate: Predicate) -> ConstructivePredicate:
     so that the strategy validation doesn't complain.
     """
     if (
-        type(predicate) is partial
-        and len(predicate.args) == 1  # type: ignore
-        and not predicate.keywords  # type: ignore
+        isinstance(predicate, partial)
+        and len(predicate.args) == 1
+        and not predicate.keywords
     ):
-        arg = predicate.args[0]  # type: ignore
+        arg = predicate.args[0]
         if (isinstance(arg, Decimal) and Decimal.is_snan(arg)) or not isinstance(
             arg, (int, float, Fraction, Decimal)
         ):
@@ -94,8 +94,8 @@ def get_numeric_predicate_bounds(predicate: Predicate) -> ConstructivePredicate:
             operator.ge: {"max_value": arg},  # lambda x: arg >= x
             operator.gt: {"max_value": arg, "exclude_max": True},  # lambda x: arg > x
         }
-        if predicate.func in options:  # type: ignore
-            return ConstructivePredicate(options[predicate.func], None)  # type: ignore
+        if predicate.func in options:
+            return ConstructivePredicate(options[predicate.func], None)
 
     # TODO: handle lambdas by AST analysis
 

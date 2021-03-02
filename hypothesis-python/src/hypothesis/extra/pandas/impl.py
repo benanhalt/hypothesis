@@ -345,7 +345,7 @@ def columns(
     create the columns.
     """
     if isinstance(names_or_number, (int, float)):
-        names = [None] * names_or_number  # type: list
+        names: List[Union[int, str, None]] = [None] * names_or_number
     else:
         names = list(names_or_number)
     return [
@@ -497,10 +497,10 @@ def data_frames(
             return rows_only()
 
     assert columns is not None
-    cols = try_convert(tuple, columns, "columns")  # type: Sequence[column]
+    cols = try_convert(tuple, columns, "columns")
 
     rewritten_columns = []
-    column_names = set()  # type: Set[str]
+    column_names: Set[str] = set()
 
     for i, c in enumerate(cols):
         check_type(column, c, f"columns[{i}]")

@@ -49,7 +49,7 @@ def timezones() -> st.SearchStrategy[dt.tzinfo]:
     # Some timezones have always had a constant offset from UTC.  This makes
     # them simpler than timezones with daylight savings, and the smaller the
     # absolute offset the simpler they are.  Of course, UTC is even simpler!
-    static = [pytz.UTC]  # type: list
+    static: list = [pytz.UTC]
     static += sorted(
         (t for t in all_timezones if isinstance(t, StaticTzInfo)),
         key=lambda tz: abs(tz.utcoffset(dt.datetime(2000, 1, 1))),

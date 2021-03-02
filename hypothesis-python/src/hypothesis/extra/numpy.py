@@ -93,7 +93,7 @@ def from_dtype(
 
     # Scalar datatypes
     if dtype.kind == "b":
-        result = st.booleans()  # type: st.SearchStrategy[Any]
+        result: st.SearchStrategy[Any] = st.booleans()
     elif dtype.kind == "f":
         result = st.floats(
             width=8 * dtype.itemsize,
