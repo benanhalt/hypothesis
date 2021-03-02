@@ -16,6 +16,7 @@
 import inspect
 import math
 from random import Random
+from typing import Dict
 
 import attr
 
@@ -24,6 +25,7 @@ from hypothesis.internal.conjecture import utils as cu
 from hypothesis.internal.reflection import define_function_signature
 from hypothesis.reporting import report
 from hypothesis.strategies._internal import core as st
+from hypothesis.strategies._internal.numbers import floats
 from hypothesis.strategies._internal.strategies import SearchStrategy
 
 
@@ -93,22 +95,22 @@ RANDOM_METHODS = [
 
 
 # Fake shims to get a good signature
-def getrandbits(self, n: int) -> int:
+def getrandbits(self, n: int) -> int:  # type: ignore
     raise NotImplementedError()
 
 
-def random(self) -> float:
+def random(self) -> float:  # type: ignore
     raise NotImplementedError()
 
 
-def _randbelow(self, n: int) -> int:
+def _randbelow(self, n: int) -> int:  # type: ignore
     raise NotImplementedError()
 
 
 STUBS = {f.__name__: f for f in [getrandbits, random, _randbelow]}
 
 
-SIGNATURES = {}
+SIGNATURES: Dict[str, inspect.Signature] = {}
 
 
 def sig_of(name):
@@ -169,10 +171,10 @@ def state_for_seed(data, seed):
     return state
 
 
-UNIFORM = st.floats(0, 1)
+UNIFORM = floats(0, 1)
 
 
-def normalize_zero(f):
+def normalize_zero(f: float) -> float:
     if f == 0.0:
         return 0.0
     else:
